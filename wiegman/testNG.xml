@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Testing API Calls"  parallel="classes" thread-count="5" >
+    <test name="Exercise">
+         <classes>
+             <class name="com.teksystems.nextsteps.wiegman.ApiGetTests"/>
+             <class name="com.teksystems.nextsteps.wiegman.ApiNegativeGetTests"/>
+          </classes>
+     </test> <!-- Test -->
+</suite> <!-- Suite -->
