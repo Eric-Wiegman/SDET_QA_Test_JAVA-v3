@@ -50,7 +50,9 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		exercise.setEndpoint("name");
 		while (!"quit".equals(exercise.getEndpoint())) {
 			askForChoice ();
-			getResults ();
+			if ("quit" != exercise.getEndpoint()) {
+				getResults (exercise.getEndpoint());
+			}
 		}
 		System.out.println(NEWLINE + "Please try again, later.");
 		scanner.close();
@@ -118,8 +120,8 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	/**
 	 * 
 	 */
-	public static void getResults () {
-		if (!exercise.getEndpoint().equals("quit")) {
+	public static void getResults (String endpoint) {
+		if (!endpoint.equals("quit")) {
 
 			System.out.println("Please enter your country" + SPACE + exercise.getPrompt() + COLON
 					+ SPACE);
@@ -127,9 +129,8 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 
 			if (!input.equals("quit")) {
 
-				String response = "unknown";
-				int count = countCountriesReturned(input);
-				String country = getCountry(count, input);
+				int count = countCountriesReturned(input, endpoint);
+				getCountry(count, input, endpoint);
 				
 				} else {
 				exercise.setEndpoint("quit");
@@ -145,7 +146,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * @param responseCode
 	 * @param input
 	 */
-	public static void handleBadRequests (String responseCode, String input) {
+	public static void handleBadRequests (String responseCode, String input, String endpoint) {
 		
 			switch (responseCode) {
 			case "400":
@@ -155,7 +156,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 				break;
 			case "404":
 				System.out.println("There was no match. Try again.");
-				handleWeirdBackwardCase(input);
+				handleWeirdBackwardCase(input, endpoint);
 				break;
 			case "500":
 				System.out.println("Server Error occurred. Please contact support.");
@@ -187,20 +188,20 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * 
 	 * @param input
 	 */
-	public static void handleWeirdBackwardCase (String input) {
-		if (exercise.getEndpoint().equals("name")) {
-			exercise.setEndpoint("capital");
+	public static void handleWeirdBackwardCase (String input, String endpoint) {
+		if (endpoint.equals("name")) {
+			endpoint = "capital";
 			JSONObject json = new JSONObject();
 			try {
 				json = JsonReader.readJsonFromUrl(
-						BASE_URL + exercise.getEndpoint() + SLASH + input);
+						BASE_URL + endpoint + SLASH + input);
 			} catch (JSONException | IOException e) {
 				// Exception is handled, essentially, below
 			}
 
 			String capital = "unknown";
 			try {
-				capital = (String) json.get(exercise.getEndpoint());
+				capital = (String) json.get(endpoint);
 			} catch (JSONException e) {
 				//There is no JSONObject Key["capital"} found
 			}
@@ -226,13 +227,13 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * @param input
 	 * @return
 	 */
-	public static int countCountriesReturned (String input) {
+	public static int countCountriesReturned (String input, String endpoint) {
 		int count = 0;
 		String response = "unknown";
 
 		try {
 			response = GETRequest("GET", 
-					BASE_URL + exercise.getEndpoint() + SLASH + input,
+					BASE_URL + endpoint + SLASH + input,
 					"null");
 		} catch (IOException e) {
 			//Ignore this exception. We handle this next.
@@ -241,7 +242,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		String responseCode = HTTPRequest.getResponseCode();
 
 		if (!responseCode.equals("200")){
-			handleBadRequests(responseCode, input);
+			handleBadRequests(responseCode, input, endpoint);
 		} else {
 			count = StringUtils.countMatches(response, "{\"name\":");
 		}
@@ -250,12 +251,13 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	}
 	
 	
-	public static String getCountry (int count, String input) {
+	public static String getCountry (int count, String input, String endpoint) {
 		String country = "unknown";
 		
 		switch (count) {
 		case 0:
 			// no action, except go through loop again
+			country = "zero";
 			break;
 			
 		case 1:
@@ -263,7 +265,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 
 			try {
 				json = JsonReader.readJsonFromUrl(
-						BASE_URL + exercise.getEndpoint() + SLASH + input);
+						BASE_URL + endpoint + SLASH + input);
 			} catch (JSONException | IOException e) {
 				// Exception is handled, essentially, in the printGoodData method
 			}
@@ -276,6 +278,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 				System.out.println("Sorry, please enter a more unique substring "
 						+ "as your value returned " + count + " results");
 				System.out.println(NEWLINE + "---" + NEWLINE);
+				country = "many";
 		}
 		
 		return country;
@@ -283,30 +286,62 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	}
 	
 	
-	public static String getCapital () {
-		//assumes response gave one country
+	public static String getCapital (String input) {
 		String capital = "unknown";
-		
-		
+
+		if (countCountriesReturned(input, "name") == 1) {
+
+			JSONObject json = new JSONObject();
+
+			try {
+				json = JsonReader.readJsonFromUrl(
+						BASE_URL + "name" + SLASH + input);
+				capital = (String) json.get("capital");
+			} catch (JSONException | IOException e) {
+				// Exception is handled, essentially, in the printGoodData method
+			}
+		}
+
 		return capital;
-		
 	}
 	
 	
-	public static String getCode2 () {
-		//assumes response gave one country
+	public static String getCode2 (String input) {
 		String code2 = "unknown";
-		
-		
+
+		if (countCountriesReturned(input, "name") == 1) {
+
+			JSONObject json = new JSONObject();
+
+			try {
+				json = JsonReader.readJsonFromUrl(
+						BASE_URL + "name" + SLASH + input);
+				code2 = (String) json.get("alpha2Code");
+			} catch (JSONException | IOException e) {
+				// Exception is handled, essentially, in the printGoodData method
+			}
+		}
+
 		return code2;
 		
 	}
 	
 	
-	public static String getCode3 () {
-		//assumes response gave one country
+	public static String getCode3 (String input) {
 		String code3 = "unknown";
 		
+		if (countCountriesReturned(input, "name") == 1) {
+
+			JSONObject json = new JSONObject();
+
+			try {
+				json = JsonReader.readJsonFromUrl(
+						BASE_URL + "name" + SLASH + input);
+				code3 = (String) json.get("alpha3Code");
+			} catch (JSONException | IOException e) {
+				// Exception is handled, essentially, in the printGoodData method
+			}
+		}
 		
 		return code3;
 		
