@@ -223,6 +223,10 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		if (endpoint.equals("name")) {
 			endpoint = "capital";
 			JSONObject json = new JSONObject();
+
+			//using a different endpoint, so can't use the
+			//HTTPRequest.getResponseBody() code!
+
 			try {
 				json = JsonReader.readJsonFromUrl(
 						BASE_URL + endpoint + SLASH + input);
@@ -268,6 +272,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 			response = GETRequest("GET", 
 					BASE_URL + endpoint + SLASH + input,
 					"null");
+			HTTPRequest.setResponseBody(response);
 		} catch (IOException e) {
 			//Ignore this exception. We handle this next.
 		}
@@ -307,14 +312,8 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 			break;
 			
 		case 1:
-			JSONObject json = new JSONObject();
-
-			try {
-				json = JsonReader.readJsonFromUrl(
-						BASE_URL + endpoint + SLASH + input);
-			} catch (JSONException | IOException e) {
-				// Exception is handled, essentially, in the printGoodData method
-			}
+			JSONObject json = convertResponseToJsonObject (
+					HTTPRequest.getResponseBody());
 
 			country = printGoodData (json);
 			break;
@@ -342,16 +341,9 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		String capital = "unknown";
 
 		if (countCountriesReturned(input, "name") == 1) {
-
-			JSONObject json = new JSONObject();
-
-			try {
-				json = JsonReader.readJsonFromUrl(
-						BASE_URL + "name" + SLASH + input);
-				capital = (String) json.get("capital");
-			} catch (JSONException | IOException e) {
-				// Exception is handled, essentially, in the printGoodData method
-			}
+			JSONObject json = convertResponseToJsonObject (
+					HTTPRequest.getResponseBody());
+			capital = (String) json.get("capital");
 		}
 
 		return capital;
@@ -367,20 +359,11 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		String code2 = "unknown";
 
 		if (countCountriesReturned(input, "name") == 1) {
-
-			JSONObject json = new JSONObject();
-
-			try {
-				json = JsonReader.readJsonFromUrl(
-						BASE_URL + "name" + SLASH + input);
-				code2 = (String) json.get("alpha2Code");
-			} catch (JSONException | IOException e) {
-				// Exception is handled, essentially, in the printGoodData method
-			}
+			JSONObject json = convertResponseToJsonObject (
+					HTTPRequest.getResponseBody());
+			code2 = (String) json.get("alpha2Code");	
 		}
-
 		return code2;
-		
 	}
 	
 	/**
@@ -391,22 +374,21 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 */
 	public static String getCode3 (String input) {
 		String code3 = "unknown";
-		
+
 		if (countCountriesReturned(input, "name") == 1) {
-
-			JSONObject json = new JSONObject();
-
-			try {
-				json = JsonReader.readJsonFromUrl(
-						BASE_URL + "name" + SLASH + input);
-				code3 = (String) json.get("alpha3Code");
-			} catch (JSONException | IOException e) {
-				// Exception is handled, essentially, in the printGoodData method
-			}
+			JSONObject json = convertResponseToJsonObject (
+					HTTPRequest.getResponseBody());
+			code3 = (String) json.get("alpha3Code");	
 		}
-		
 		return code3;
-		
+	}
+	
+	
+	public static JSONObject convertResponseToJsonObject (String response) {
+		if (response.substring(0,1).equals("[")) {
+			response = response.substring(1);
+		}
+		return new JSONObject(response);
 	}
 }
 
