@@ -125,4 +125,16 @@ public class DataProviderClass
                   	{"cocos", "CCKK2"}
                 };
             }
+            
+            @DataProvider(name = "data-provider-get-alternateCountryName")
+            static Object[][] dataProviderGetAlternateCountryNameMethod() 
+            {
+                return new Object[][] { 
+                	{"Vatican", "Holy See"},
+                	{"Nippon", "Japan"},
+                  	{"Pleasant Island", "Nauru"},
+                  	{"Oesterreich", "Austria"},
+                  	{"RSA", "South Africa"}
+                };
+            } 
 }

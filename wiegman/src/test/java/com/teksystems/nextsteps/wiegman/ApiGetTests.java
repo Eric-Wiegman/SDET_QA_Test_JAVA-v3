@@ -71,4 +71,16 @@ public class ApiGetTests
     			 "Three-Character Code does not match");
     }
     
+    
+    @Test (dataProvider = "data-provider-get-alternateCountryName",
+    		dataProviderClass = DataProviderClass.class)
+    public void alternateCountryTests(String input, String expected) throws IOException
+    {
+    	int count = SDET_QA_Test_JAVA.countCountriesReturned (input, "name");
+    	String name  = SDET_QA_Test_JAVA.getCountry(count, input, "name");
+
+    	 Assert.assertEquals(name, expected, 
+    			 "Country name does not match");
+    }
+    
 }

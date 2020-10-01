@@ -116,8 +116,6 @@ public class HTTPRequest implements CharConsts {
 		
 		setResponseCode(Integer.toString(responseCode));
 		setResponseMsg(responseMsg);
-//		logger.info(requestType + " Response Code :  " + responseCode);
-//		logger.info(requestType + " Response Message : " + responseMsg);
 
 		BufferedReader in = new BufferedReader(new InputStreamReader(httpCon.getInputStream()));
 
@@ -128,11 +126,9 @@ public class HTTPRequest implements CharConsts {
 			response.append(inputLine);
 		}
 		in.close();
-
-		// print result
+		
 		String responseString = response.toString();
 		setResponseBody(responseString);
-		//logger.info(responseString);
 	}
 
 /**

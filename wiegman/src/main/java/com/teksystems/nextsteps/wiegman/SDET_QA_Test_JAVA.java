@@ -24,7 +24,22 @@ import org.json.JSONObject;
  * https://restcountries.eu/#api-endpoints-code
  * <BR><BR>
  * Also included are a series of positive and negative tests (included in
- * a TestNG.xml suite file) that test the GET method for the API.
+ * the `TestNG.xml' suite file) that test the GET method for the API (positive
+ * and negative tests).
+ * <OL>
+ * Assumptions Made
+ * <LI>The obscure specification of code was taken to mean the endpoint called
+ * <code>code</code>, which is <code>alpha2Code</code> or <code>alpha3Code</code>.
+ * These codes (of all 'codes' covered in the API) are most likely to return a
+ * unique country, and that is important as the specification says to 
+ * "Using the provide REST service, create a program that returns, at minimum, 
+ * capital city based on user input for name or code." This means since there can
+ * only be one capital city, the idea is to return a unique country name.</LI>
+ * <LI>It is assumed that if the user provides an insufficient substring to 
+ * uniquely identify a single country, that the output is to be the String `unknown'</LI>
+ * <LI>It is further assumed that if the user provides a substring that identifies
+ * no known countries, then the output is to be the String `zero'</LI>
+ * </OL>
  */
 public class SDET_QA_Test_JAVA  extends Fetch {
 
@@ -92,7 +107,8 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 
 	
 	/**
-	 * 
+	 * Uses the Java Scanner class to allow user to choose to identify the
+	 * country by either Name or Code.
 	 */
 	public static void askForChoice () {
 		System.out.println(
@@ -118,7 +134,13 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 
 	
 	/**
+	 * Gets the REST API response and gives the required information about the 
+	 * requested country/ies returned (giving the count) and (if only one found)
+	 * then the name of that country. Indirectly calls other code that ultimately
+	 * prints information on how well the lookup went and any information (especially
+	 * the capital city) found.
 	 * 
+	 * @param endpoint The endpoint used in the REST URL
 	 */
 	public static void getResults (String endpoint) {
 		if (!endpoint.equals("quit")) {
@@ -142,9 +164,11 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	
 	
 	/**
-	 * 
-	 * @param responseCode
-	 * @param input
+	 * This code handles requests that are not giving a 200 response status code,
+	 * primarily those that return 400, 404, or 500.
+	 * @param responseCode The HTTP response status code returned.
+	 * @param input The input provided by the user (either country name or code)
+	 * @param endpoint The endpoint used in the REST URL 
 	 */
 	public static void handleBadRequests (String responseCode, String input, String endpoint) {
 		
@@ -168,8 +192,10 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	
 	
 	/**
+	 * Prints the "good data" ... country name, capital city, and 2- and 3-char
+	 * codes associated with the response body returned from the REST API call.
 	 * 
-	 * @param json
+	 * @param json A JSON Object that contains the response body returned
 	 */
 	public static String printGoodData(JSONObject json) {
 		if (json != null) {
@@ -185,8 +211,11 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	
 	
 	/**
-	 * 
-	 * @param input
+	 * This is a special case where the user accidentally enters the Capital City
+	 * when prompted to enter the Country Name. This code explains what they did
+	 * incorrectly.
+	 * @param input The "country" name that is incorrectly entered as the capital
+	 * city
 	 */
 	public static void handleWeirdBackwardCase (String input, String endpoint) {
 		if (endpoint.equals("name")) {
@@ -223,9 +252,11 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	
 	
 	/**
+	 * This counts the number of countries returned in the REST response body.
 	 * 
-	 * @param input
-	 * @return
+	 * @param input The "country" name that is entered by the user
+	 * @param endpoint The endpoint used in the REST URL
+	 * @return the number of countries returned in the REST response body
 	 */
 	public static int countCountriesReturned (String input, String endpoint) {
 		int count = 0;
@@ -251,6 +282,19 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	}
 	
 	
+	/**
+	 * This gives the unique one country name or else gives the special keywords 
+	 * of `unknown' or `zero' for cases where many or zero countries (respectively)
+	 * are returned.
+	 * @param count The count of countries returned, as by the 
+	 * <code>countCountriesReturned (String input, String endpoint)</code> method
+	 * @param input either a unique ISO code or a relatively unique subset of the 
+	 * country name
+	 * @param endpoint The endpoint used in the REST URL
+	 * @return either the unique country name returned or the String `unknown' if
+	 * that count is greater than one. In the case where no JSON response occurs
+	 * (such as when there is a 404) then the return is the String `zero'.
+	 */
 	public static String getCountry (int count, String input, String endpoint) {
 		String country = "unknown";
 		
@@ -286,6 +330,12 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	}
 	
 	
+	/**
+	 * This returns the name of the capital city for the given country.
+	 * @param input The data entered by the user at the prompt
+	 * @return The name of the capital city associated with the country associated
+	 * with the REST response body
+	 */
 	public static String getCapital (String input) {
 		String capital = "unknown";
 
@@ -305,7 +355,12 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		return capital;
 	}
 	
-	
+	/**
+	 * This returns the name of the ISO Alpha-2 code for the given country.
+	 * @param input The data entered by the user at the prompt
+	 * @return The name of the code associated with the country associated
+	 * with the REST response body
+	 */
 	public static String getCode2 (String input) {
 		String code2 = "unknown";
 
@@ -326,7 +381,12 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		
 	}
 	
-	
+	/**
+	 * This returns the name of the ISO Alpha-3 code for the given country.
+	 * @param input The data entered by the user at the prompt
+	 * @return The name of the code associated with the country associated
+	 * with the REST response body
+	 */
 	public static String getCode3 (String input) {
 		String code3 = "unknown";
 		
