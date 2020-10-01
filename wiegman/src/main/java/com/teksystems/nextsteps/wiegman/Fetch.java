@@ -19,7 +19,7 @@ public class Fetch extends HTTPRequest {
 	 * Signals that an I/O exception of some sort has occurred.
 	 */
 	public static void main(String[] args) throws IOException {
-		
+		//This is just here for some quick unit test, if we write them
 	}
 
 	/**

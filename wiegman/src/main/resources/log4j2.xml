@@ -2,7 +2,8 @@
 
 <Configuration status="info">
 	<Properties>
-		<Property name="layout">%d [%t] %-5level %logger - %m%n</Property>
+<!-- 		<Property name="layout">%d [%t] %-5level %logger - %m%n</Property> -->
+		<Property name="layout">%d [%t] %m%n</Property>
 	</Properties>
 
 	<Appenders>

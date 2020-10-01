@@ -69,7 +69,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 				getResults (exercise.getEndpoint());
 			}
 		}
-		System.out.println(NEWLINE + "Please try again, later.");
+		logger.info(NEWLINE + "Please try again, later.");
 		scanner.close();
 	}
 
@@ -111,7 +111,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * country by either Name or Code.
 	 */
 	public static void askForChoice () {
-		System.out.println(
+		logger.info(
 				"Do you want to input Country Name ('N')"
 						+ " or Country Code ('C')?");
 		String choose = scanner.nextLine();
@@ -125,9 +125,9 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 			exercise.setPrompt("code");
 			break;
 		default:
-			System.out.println("Sorry, you needed to enter either "
+			logger.info("Sorry, you needed to enter either "
 					+ "Country Name ('N') or Country Code ('C'.)");
-			System.out.println(NEWLINE + "---" + NEWLINE);
+			logger.info(NEWLINE + "---" + NEWLINE);
 			exercise.setEndpoint("quit");
 		}
 	}
@@ -145,7 +145,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	public static void getResults (String endpoint) {
 		if (!endpoint.equals("quit")) {
 
-			System.out.println("Please enter your country" + SPACE + exercise.getPrompt() + COLON
+			logger.info("Please enter your country" + SPACE + exercise.getPrompt() + COLON
 					+ SPACE);
 			String input = scanner.nextLine();
 
@@ -174,17 +174,17 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		
 			switch (responseCode) {
 			case "400":
-				System.out.println("That was a bad request. The codes "
+				logger.info("That was a bad request. The codes "
 						+ "must be two or three characters long.");
-				System.out.println(NEWLINE + "---" + NEWLINE);
+				logger.info(NEWLINE + "---" + NEWLINE);
 				break;
 			case "404":
-				System.out.println("There was no match. Try again.");
+				logger.info("There was no match. Try again.");
 				handleWeirdBackwardCase(input, endpoint);
 				break;
 			case "500":
-				System.out.println("Server Error occurred. Please contact support.");
-				System.out.println(NEWLINE + "---" + NEWLINE);
+				logger.info("Server Error occurred. Please contact support.");
+				logger.info(NEWLINE + "---" + NEWLINE);
 				break;
 
 			}
@@ -199,12 +199,12 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 */
 	public static String printGoodData(JSONObject json) {
 		if (json != null) {
-			System.out.println(NEWLINE + DIVIDER + NEWLINE + NEWLINE
-					+ "Your country name is " +  json.get("name"));
-			System.out.println("with capital city of " +  json.get("capital"));
-			System.out.println("and ISO 3166-1 codes of " +  json.get("alpha2Code")
+			logger.info(NEWLINE + DIVIDER + NEWLINE + NEWLINE);
+			logger.info("Your country name is " +  json.get("name"));
+			logger.info("with capital city of " +  json.get("capital"));
+			logger.info("and ISO 3166-1 codes of " +  json.get("alpha2Code")
 			+ " and " + json.get("alpha3Code"));
-			System.out.println(NEWLINE + DIVIDER + NEWLINE);
+			logger.info(NEWLINE + DIVIDER + NEWLINE);
 		}
 		return json.getString("name");
 	}
@@ -236,16 +236,16 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 			}
 
 			if (!capital.equals("unknown")) {
-				System.out.println("Wait. You got it backward!");
-				System.out.println(NEWLINE + DIVIDER + NEWLINE );
+				logger.info("Wait. You got it backward!");
+				logger.info(NEWLINE + DIVIDER + NEWLINE );
 				String wrongCountry = (String) json.get("capital");
 				String actualCountry = (String) json.get("name");
-				System.out.println(wrongCountry + " is not the "
+				logger.info(wrongCountry + " is not the "
 						+ "country -- it is the capital of the country of "
 						+ actualCountry);
-				System.out.println(NEWLINE + DIVIDER + NEWLINE);
+				logger.info(NEWLINE + DIVIDER + NEWLINE);
 			} else {
-				System.out.println(NEWLINE + "---" + NEWLINE);
+				logger.info(NEWLINE + "---" + NEWLINE);
 			}
 		}
 	}
@@ -296,7 +296,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * (such as when there is a 404) then the return is the String `zero'.
 	 */
 	public static String getCountry (int count, String input, String endpoint) {
-		String country = "unknown";
+		String country;
 		
 		switch (count) {
 		case 0:
@@ -319,9 +319,9 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 			
 			default:
 				//it is more than one country returned
-				System.out.println("Sorry, please enter a more unique substring "
+				logger.info("Sorry, please enter a more unique substring "
 						+ "as your value returned " + count + " results");
-				System.out.println(NEWLINE + "---" + NEWLINE);
+				logger.info(NEWLINE + "---" + NEWLINE);
 				country = "many";
 		}
 		
