@@ -61,7 +61,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 	 * special processing during the execution of this program. 
 	 * Signals that an I/O exception of some sort has occurred.
 	 */
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) {
 		exercise.setEndpoint("name");
 		while (!"quit".equals(exercise.getEndpoint())) {
 			askForChoice ();
@@ -186,7 +186,9 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 				logger.info("Server Error occurred. Please contact support.");
 				logger.info(NEWLINE + "---" + NEWLINE);
 				break;
-
+				default:
+					logger.info("Unknown Error occurred. Please contact support.");
+					logger.info(NEWLINE + "---" + NEWLINE);
 			}
 	}
 	
