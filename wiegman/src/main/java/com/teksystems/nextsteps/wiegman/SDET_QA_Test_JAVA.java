@@ -65,7 +65,7 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		exercise.setEndpoint("name");
 		while (!"quit".equals(exercise.getEndpoint())) {
 			askForChoice ();
-			if ("quit" != exercise.getEndpoint()) {
+			if ("quit".equals(exercise.getEndpoint())) {
 				getResults (exercise.getEndpoint());
 			}
 		}
