@@ -14,6 +14,9 @@ import org.json.JSONObject;
 /**
  * This code reads the JSON response from the REST API Url and returns it
  * as a JSON Object.
+ * 
+ * NOTE: This is not the most efficient code, and I am in the process
+ * of removing all code from this class. 
  */
 public class JsonReader {
 	
