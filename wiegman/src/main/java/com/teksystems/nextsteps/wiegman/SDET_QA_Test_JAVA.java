@@ -223,16 +223,23 @@ public class SDET_QA_Test_JAVA  extends Fetch {
 		if (endpoint.equals("name")) {
 			endpoint = "capital";
 			JSONObject json = new JSONObject();
-
-			//using a different endpoint, so can't use the
-			//HTTPRequest.getResponseBody() code!
-
+			
 			try {
-				json = JsonReader.readJsonFromUrl(
-						BASE_URL + endpoint + SLASH + input);
-			} catch (JSONException | IOException e) {
-				// Exception is handled, essentially, below
+				GETRequest("GET", 
+						BASE_URL + endpoint + SLASH + input,
+						"null");
+				json = convertResponseToJsonObject (
+						HTTPRequest.getResponseBody());
+			} catch (IOException e) {
+				//Ignore this exception. We handle this next.
 			}
+
+//			try {
+//				json = JsonReader.readJsonFromUrl(
+//						BASE_URL + endpoint + SLASH + input);
+//			} catch (JSONException | IOException e) {
+//				// Exception is handled, essentially, below
+//			}
 
 			String capital = "unknown";
 			try {
